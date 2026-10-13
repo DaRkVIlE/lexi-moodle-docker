@@ -36,6 +36,19 @@ done
 echo "==> [Ponytail] Verified Moodle config:"
 grep -E "(reverseproxy|sslproxy|wwwroot|enablewebservices)" /bitnami/moodle/config.php 2>/dev/null || true
 
+# Ensure Apache SSL certs exist
+mkdir -p /opt/bitnami/apache/conf/bitnami/certs
+if [ ! -f "/opt/bitnami/apache/conf/bitnami/certs/tls.crt" ]; then
+    echo "==> [Ponytail] Generating self-signed certs for Apache..."
+    openssl req -x509 -nodes -days 3650 -newkey rsa:2048 \
+        -keyout /opt/bitnami/apache/conf/bitnami/certs/tls.key \
+        -out /opt/bitnami/apache/conf/bitnami/certs/tls.crt \
+        -subj "/CN=localhost" 2>/dev/null || true
+    cp -a /opt/bitnami/apache/conf/bitnami/certs/tls.crt /opt/bitnami/apache/conf/bitnami/certs/server.crt 2>/dev/null || true
+    cp -a /opt/bitnami/apache/conf/bitnami/certs/tls.key /opt/bitnami/apache/conf/bitnami/certs/server.key 2>/dev/null || true
+fi
+chown -R 1001:root /opt/bitnami/apache/conf/bitnami/certs 2>/dev/null || true
+
 echo "==> [Ponytail] Starting Apache as user 1001..."
 if command -v runuser >/dev/null 2>&1; then
     exec runuser -u moodleuser -- /opt/bitnami/scripts/apache/run.sh
