@@ -9,8 +9,4 @@ RUN mkdir -p /bitnami/apache/conf \
     chown -R 1001:root /bitnami/apache /bitnami/moodledata && \
     chmod -R g+rwX /bitnami/apache /bitnami/moodledata
 
-# Trace every bash command in entrypoint and setup to see exact failure
-RUN sed -i '2i set -x' /opt/bitnami/scripts/moodle/entrypoint.sh && \
-    sed -i '2i set -x' /opt/bitnami/scripts/moodle/setup.sh
-
 USER 1001
