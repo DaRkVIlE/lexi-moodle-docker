@@ -1,10 +1,8 @@
-FROM bitnamilegacy/moodle:4.5.4-debian-12-r4
+FROM bitnamilegacy/moodle:5.0.2-debian-12-r2
 
-# Railway-compatibility fixes for Bitnami Moodle:
-# 1. The entrypoint realpath-checks /bitnami/apache/conf — pre-create so it
-#    exists even on a fresh volume mount (the volume overlays /bitnami/moodle,
-#    NOT /bitnami/apache, so this dir is safe to bake in).
-# 2. Ensure the moodledata directory exists for Moodle's file storage.
+# Railway compatibility fixes:
+# 1. Ensure /bitnami/apache/conf exists so entrypoint doesn't fail on fresh mounts
+# 2. Ensure /bitnami/moodledata exists
 USER root
 
 RUN mkdir -p /bitnami/apache/conf \
