@@ -36,11 +36,11 @@ done
 echo "==> [Ponytail] Verified Moodle config:"
 grep -E "(reverseproxy|sslproxy|wwwroot|enablewebservices)" /bitnami/moodle/config.php 2>/dev/null || true
 
-echo "==> [Ponytail] Starting Apache as non-root user 1001..."
-if command -v gosu >/dev/null 2>&1; then
+echo "==> [Ponytail] Starting Apache as user 1001..."
+if command -v runuser >/dev/null 2>&1; then
+    exec runuser -u moodleuser -- /opt/bitnami/scripts/apache/run.sh
+elif command -v gosu >/dev/null 2>&1; then
     exec gosu 1001 /opt/bitnami/scripts/apache/run.sh
-elif [ -f "/opt/bitnami/common/bin/gosu" ]; then
-    exec /opt/bitnami/common/bin/gosu 1001 /opt/bitnami/scripts/apache/run.sh
 else
-    exec su -s /bin/bash 1001 -c "/opt/bitnami/scripts/apache/run.sh"
+    exec su -s /bin/bash moodleuser -c "/opt/bitnami/scripts/apache/run.sh"
 fi
