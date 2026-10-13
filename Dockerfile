@@ -10,4 +10,9 @@ RUN mkdir -p /bitnami/apache/conf \
     chown -R 1001:root /bitnami && \
     chmod -R 777 /bitnami
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 USER 1001
+
+ENTRYPOINT ["/entrypoint.sh"]
